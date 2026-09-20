@@ -100,9 +100,9 @@ tts api set abc123xyz
 
 | OS      | Path |
 |---------|------|
-| Windows | `C:\Users\<you>\.tts\config.json` |
-| macOS   | `~/.tts/config.json` |
-| Linux   | `~/.tts/config.json` |
+| Windows | `C:\Users\<you>\.voxtral\config.json` |
+| macOS   | `~/.voxtral/config.json` |
+| Linux   | `~/.voxtral/config.json` |
 
 > [!NOTE]
 > The `MISTRAL_API_KEY` environment variable always takes precedence over the config file if both are set.
@@ -119,7 +119,7 @@ tts api show
 
 **Example output:**
 ```
-Config file : C:\Users\sedat\.tts\config.json
+Config file : C:\Users\sedat\.voxtral\config.json
 API key     : ****************************FKZU
 ```
 
@@ -314,14 +314,14 @@ tts narration.txt --voice reference_speaker.mp3
 
 ## Config File
 
-The config is stored as plain JSON at `~/.tts/config.json`.
+The config is stored as plain JSON at `~/.voxtral/config.json`.
 
 **Location by OS:**
 | OS | Full path |
 |----|-----------|
-| Windows | `C:\Users\<username>\.tts\config.json` |
-| macOS | `/Users/<username>/.tts/config.json` |
-| Linux | `/home/<username>/.tts/config.json` |
+| Windows | `C:\Users\<username>\.voxtral\config.json` |
+| macOS | `/Users/<username>/.voxtral/config.json` |
+| Linux | `/home/<username>/.voxtral/config.json` |
 
 **Current config keys:**
 
@@ -329,7 +329,7 @@ The config is stored as plain JSON at `~/.tts/config.json`.
 |-----|--------|-------------|
 | `api_key` | `tts api set` | Your Mistral API key |
 
-**Example `~/.tts/config.json`:**
+**Example `~/.voxtral/config.json`:**
 ```json
 {
   "api_key": "your-mistral-api-key-here"
@@ -448,7 +448,7 @@ Every possible way to use the `tts` CLI — copy, paste, run.
 ### 🔑 API Key Management
 
 ```bash
-# Save your key (stored in ~/.tts/config.json)
+# Save your key (stored in ~/.voxtral/config.json)
 tts api set 2dfN8bc0XS31SKheOczCCw00lJPWFKZU
 
 # Display current key (masked) and config file location
@@ -631,4 +631,4 @@ tts <input.txt> -v <slug|file>
 
 ---
 
-*Author: Sedat ERGOZ · [github.com/eaeoz/tts](https://github.com/eaeoz/tts)*
+*Author: Sedat ERGOZ · [github.com/eaeoz/voxtral](https://github.com/eaeoz/voxtral)*
