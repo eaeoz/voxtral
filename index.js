@@ -123,24 +123,39 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+/** Converts HH:MM:SS or HH:MM:SS.mmm string to total seconds */
+function timestampToSeconds(ts) {
+  const parts = ts.split(':');
+  if (parts.length === 3) {
+    const hours   = parseFloat(parts[0]);
+    const minutes = parseFloat(parts[1]);
+    const seconds = parseFloat(parts[2]);
+    return hours * 3600 + minutes * 60 + seconds;
+  }
+  return 0;
+}
+
 // ─── Parse timestamped text file ─────────────────────────────────────────────
 
 /**
  * Parses lines of the form:
  *   HH:MM:SS|The text to speak
- * Returns [{ timestamp, text }, …]
+ * Returns [{ timestamp, timestampSeconds, text }, …]
  */
 function parseInputFile(filePath) {
   const raw = fs.readFileSync(filePath, 'utf8');
   const lines = raw.split(/\r?\n/).filter(l => l.trim());
   const entries = [];
   for (const line of lines) {
-    const m = line.match(/^(\d{2}:\d{2}:\d{2})\|(.+)$/);
+    const m = line.match(/^(\d{2}:\d{2}:\d{2}(?:\.\d+)?)\|(.+)$/);
     if (!m) {
       console.error(`  ⚠  Skipping unrecognised line: ${line}`);
       continue;
     }
-    entries.push({ timestamp: m[1], text: m[2].trim() });
+    const timestamp = m[1];
+    const text = m[2].trim();
+    const timestampSeconds = timestampToSeconds(timestamp);
+    entries.push({ timestamp, timestampSeconds, text });
   }
   return entries;
 }
@@ -328,27 +343,80 @@ async function cmdConvert(inputFile, opts) {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'voxtral-'));
 
   try {
-    const clipPaths = [];
+    const rawClips = [];
 
     for (let i = 0; i < entries.length; i++) {
       const { timestamp, text } = entries[i];
       process.stdout.write(`  [${i + 1}/${entries.length}] ${timestamp}  "${text.slice(0, 60)}${text.length > 60 ? '…' : ''}"  →  `);
 
       const base64 = await ttsRequest({ apiKey, text, voiceId, refAudio });
-      const clipPath = path.join(tmpDir, `clip_${String(i).padStart(4, '0')}.mp3`);
-      fs.writeFileSync(clipPath, Buffer.from(base64, 'base64'));
-      clipPaths.push(clipPath);
+      const rawClipPath = path.join(tmpDir, `raw_${String(i).padStart(4, '0')}.mp3`);
+      fs.writeFileSync(rawClipPath, Buffer.from(base64, 'base64'));
+      rawClips.push(rawClipPath);
 
       console.log('✔');
     }
 
-    // ── Merge all clips with bundled FFmpeg ──
-    if (entries.length === 1) {
-      fs.copyFileSync(clipPaths[0], outputFile);
-    } else {
-      console.log('\nMerging clips with bundled FFmpeg…');
-      joinMp3Files(clipPaths, outputFile, tmpDir);
+    console.log('\nAligning clip timings to timestamps with FFmpeg…');
+    const finalSegments = [];
+
+    // Initial silence if the first entry starts after 00:00:00
+    if (entries[0].timestampSeconds > 0) {
+      const initialSilPath = path.join(tmpDir, 'seg_initial.mp3');
+      const silDur = entries[0].timestampSeconds;
+      const res = spawnSync(FFMPEG_BIN, [
+        '-y',
+        '-f', 'lavfi',
+        '-i', 'anullsrc=r=44100:cl=stereo',
+        '-t', String(silDur),
+        '-c:a', 'libmp3lame',
+        '-b:a', '128k',
+        initialSilPath,
+      ], { stdio: ['ignore', 'pipe', 'pipe'] });
+
+      if (res.status === 0) {
+        finalSegments.push(initialSilPath);
+      }
     }
+
+    for (let i = 0; i < entries.length; i++) {
+      const currentTS = entries[i].timestampSeconds;
+      const rawClip   = rawClips[i];
+      const segPath   = path.join(tmpDir, `seg_${String(i).padStart(4, '0')}.mp3`);
+
+      let targetDur = null;
+      if (i < entries.length - 1) {
+        const nextTS = entries[i + 1].timestampSeconds;
+        if (nextTS > currentTS) {
+          targetDur = nextTS - currentTS;
+        }
+      }
+
+      if (targetDur !== null && targetDur > 0) {
+        // Pad trailing silence if clip is shorter, or trim if clip is longer than targetDur
+        const res = spawnSync(FFMPEG_BIN, [
+          '-y',
+          '-i', rawClip,
+          '-af', 'apad',
+          '-t', String(targetDur),
+          '-c:a', 'libmp3lame',
+          '-b:a', '128k',
+          segPath,
+        ], { stdio: ['ignore', 'pipe', 'pipe'] });
+
+        if (res.status === 0) {
+          finalSegments.push(segPath);
+        } else {
+          finalSegments.push(rawClip);
+        }
+      } else {
+        // Last clip or no timestamp constraint: use raw clip as is
+        finalSegments.push(rawClip);
+      }
+    }
+
+    console.log('Merging aligned clips into output MP3…');
+    joinMp3Files(finalSegments, outputFile, tmpDir);
 
     const sizeMB = (fs.statSync(outputFile).size / 1024 / 1024).toFixed(2);
     console.log(`\n✔  Done → ${outputFile}  (${sizeMB} MB)\n`);
