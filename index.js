@@ -352,6 +352,7 @@ USAGE
   voxtral <input.txt> --voice <slug|file>
                                  Use a specific voice slug or reference audio file
   voxtral help / --help          Show this help
+  voxtral version / --version    Display version number
 
 INPUT FILE FORMAT
 
@@ -402,6 +403,13 @@ async function main() {
 
   if (argv.length === 0 || argv[0] === '--help' || argv[0] === '-h' || argv[0] === 'help') {
     printHelp();
+    process.exit(0);
+  }
+
+  // voxtral version / --version / -V / -v (when passed alone)
+  if (argv[0] === 'version' || argv[0] === '--version' || argv[0] === '-V' || (argv.length === 1 && argv[0] === '-v')) {
+    const pkg = require('./package.json');
+    console.log(`voxtral v${pkg.version}`);
     process.exit(0);
   }
 

@@ -611,6 +611,7 @@ voxtral test.txt -v my_voice.wav         # Voice cloning from local audio file
 
 ```
 voxtral help
+voxtral version
 voxtral api set <MISTRAL_API_KEY>
 voxtral api show
 voxtral voices
@@ -627,6 +628,7 @@ voxtral <input.txt> -v <slug|file>
 | `api set <KEY>` | subcommand | — | Save Mistral API key to config |
 | `api show` | subcommand | — | Show saved key (masked) |
 | `voices` | subcommand | — | List all preset voices |
+| `version` / `--version` / `-v` | subcommand / flag | — | Display version number |
 | `help` / `--help` / `-h` | subcommand / flag | — | Show help text |
 
 ---
