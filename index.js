@@ -171,12 +171,12 @@ function joinMp3Files(clips, outputPath, tmpDir) {
   }
 }
 
-// ─── Subcommand: tts api set ─────────────────────────────────────────────────
+// ─── Subcommand: voxtral api set ───────────────────────────────────────────────
 
 function cmdApiSet(args) {
   const key = args[0];
   if (!key) {
-    console.error('Usage: tts api set <MISTRAL_API_KEY>');
+    console.error('Usage: voxtral api set <MISTRAL_API_KEY>');
     process.exit(1);
   }
   const cfg = readConfig();
@@ -185,7 +185,7 @@ function cmdApiSet(args) {
   console.log(`✔  API key saved to ${getConfigPath()}`);
 }
 
-// ─── Subcommand: tts api show ────────────────────────────────────────────────
+// ─── Subcommand: voxtral api show ──────────────────────────────────────────────
 
 function cmdApiShow() {
   const cfg = readConfig();
@@ -193,7 +193,7 @@ function cmdApiShow() {
   if (!cfg.api_key) {
     console.log(`Config file : ${p}`);
     console.log('API key     : (not set)');
-    console.log('\nTo set your key run:  tts api set <YOUR_KEY>');
+    console.log('\nTo set your key run:  voxtral api set <YOUR_KEY>');
   } else {
     // Mask all but the last 4 chars
     const masked = cfg.api_key.replace(/.(?=.{4})/g, '*');
@@ -202,12 +202,12 @@ function cmdApiShow() {
   }
 }
 
-// ─── Subcommand: tts voices ──────────────────────────────────────────────────
+// ─── Subcommand: voxtral voices ────────────────────────────────────────────────
 
 async function cmdVoices() {
   const apiKey = getApiKey();
   if (!apiKey) {
-    console.error('Error: No API key configured. Run: tts api set <YOUR_KEY>');
+    console.error('Error: No API key configured. Run: voxtral api set <YOUR_KEY>');
     process.exit(1);
   }
 
@@ -245,16 +245,16 @@ async function cmdVoices() {
     const lang   = (v.languages || []).join(', ');
     console.log(`  ${slug} ${name} ${gender}  ${lang}`);
   }
-  console.log(`\n  Usage:  tts test.txt --voice <SLUG>`);
+  console.log(`\n  Usage:  voxtral test.txt --voice <SLUG>`);
   console.log(`  Default voice: ${DEFAULT_VOICE}\n`);
 }
 
-// ─── Subcommand: tts <file> [options] ────────────────────────────────────────
+// ─── Subcommand: voxtral <file> [options] ──────────────────────────────────────
 
 async function cmdConvert(inputFile, opts) {
   const apiKey = getApiKey();
   if (!apiKey) {
-    console.error('Error: No API key configured. Run: tts api set <YOUR_KEY>');
+    console.error('Error: No API key configured. Run: voxtral api set <YOUR_KEY>');
     process.exit(1);
   }
 
@@ -340,7 +340,7 @@ async function cmdConvert(inputFile, opts) {
 
 function printHelp() {
   console.log(`
-voxtral (tts) — Mistral Voxtral Text-to-Speech CLI
+voxtral — Mistral Voxtral Text-to-Speech CLI
 ─────────────────────────────────────────────────
 
 USAGE
@@ -351,9 +351,7 @@ USAGE
   voxtral <input.txt>            Convert a timestamped text file → MP3
   voxtral <input.txt> --voice <slug|file>
                                  Use a specific voice slug or reference audio file
-  voxtral --help                 Show this help
-
-  (Note: You can also use "tts" as a short command alias)
+  voxtral help / --help          Show this help
 
 INPUT FILE FORMAT
 
@@ -402,28 +400,28 @@ EXAMPLES
 async function main() {
   const argv = process.argv.slice(2);
 
-  if (argv.length === 0 || argv[0] === '--help' || argv[0] === '-h') {
+  if (argv.length === 0 || argv[0] === '--help' || argv[0] === '-h' || argv[0] === 'help') {
     printHelp();
     process.exit(0);
   }
 
-  // tts api set / tts api show
+  // voxtral api set / voxtral api show
   if (argv[0] === 'api') {
     const sub = argv[1];
     if (sub === 'set')  { cmdApiSet(argv.slice(2)); return; }
     if (sub === 'show') { cmdApiShow(); return; }
     console.error(`Unknown api subcommand: ${sub || '(none)'}`);
-    console.error('Usage: tts api set <KEY> | tts api show');
+    console.error('Usage: voxtral api set <KEY> | voxtral api show');
     process.exit(1);
   }
 
-  // tts voices
+  // voxtral voices
   if (argv[0] === 'voices') {
     await cmdVoices();
     return;
   }
 
-  // tts <file> [--voice <slug>]
+  // voxtral <file> [--voice <slug>]
   const inputFile = argv[0];
   const opts = {};
   for (let i = 1; i < argv.length; i++) {
