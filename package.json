@@ -1,6 +1,6 @@
 {
   "name": "voxtral",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Convert timestamped text files to MP3 using Mistral Voxtral TTS CLI",
   "main": "index.js",
   "bin": {
