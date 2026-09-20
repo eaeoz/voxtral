@@ -35,7 +35,7 @@
 npm install -g voxtral
 ```
 
-After installation, both `voxtral` and `tts` commands are available globally in your terminal.
+After installation, the `voxtral` command is available globally in your terminal.
 
 ### From Source (Local Link)
 ```bash
@@ -63,13 +63,13 @@ npm publish --access public
 
 ```bash
 # 1. Save your Mistral API key
-tts api set YOUR_MISTRAL_API_KEY
+voxtral api set YOUR_MISTRAL_API_KEY
 
 # 2. Create a timestamped text file
 echo "00:00:00|Hello world." > test.txt
 
 # 3. Convert to MP3 (uses default voice: en_paul_neutral)
-tts test.txt
+voxtral test.txt
 # → produces test.mp3 in the same folder
 ```
 
@@ -79,12 +79,12 @@ tts test.txt
 
 ---
 
-### `tts api set`
+### `voxtral api set`
 
 Saves your Mistral API key to the user config file.
 
 ```
-tts api set <KEY>
+voxtral api set <KEY>
 ```
 
 | Argument | Required | Description |
@@ -93,7 +93,7 @@ tts api set <KEY>
 
 **Examples:**
 ```bash
-tts api set abc123xyz
+voxtral api set abc123xyz
 ```
 
 **Config file location by OS:**
@@ -109,12 +109,12 @@ tts api set abc123xyz
 
 ---
 
-### `tts api show`
+### `voxtral api show`
 
 Displays the currently stored API key (masked) and the config file path.
 
 ```
-tts api show
+voxtral api show
 ```
 
 **Example output:**
@@ -125,12 +125,12 @@ API key     : ****************************FKZU
 
 ---
 
-### `tts voices`
+### `voxtral voices`
 
 Lists all available Voxtral preset voices with their slug, name, gender, language and style tags.
 
 ```
-tts voices
+voxtral voices
 ```
 
 **Example output:**
@@ -150,7 +150,7 @@ Available voices (10 total):
   gb_oliver_neutral              Oliver - Neutral          male    en_gb
   gb_jane_sarcasm                Jane - Sarcasm            female  en_gb
 
-  Usage: tts test.txt --voice <SLUG>
+  Usage: voxtral test.txt --voice <SLUG>
   Default voice: en_paul_neutral
 ```
 
@@ -158,12 +158,12 @@ Use the **SLUG** value with `--voice`.
 
 ---
 
-### `tts <file>`
+### `voxtral <file>`
 
 Converts a timestamped text file to a single merged MP3.
 
 ```
-tts <input.txt> [--voice <slug|file>]
+voxtral <input.txt> [--voice <slug|file>]
 ```
 
 | Argument | Required | Description |
@@ -184,10 +184,10 @@ test.txt       →  test.mp3
 **Progress display:**
 ```
 Input  : test.txt
-Output : E:\Gemini\tts\test.mp3
+Output : E:\Gemini\voxtral\test.mp3
 Lines  : 3
 Voice  : en_paul_neutral
-FFmpeg : E:\Gemini\tts\node_modules\ffmpeg-static\ffmpeg.exe
+FFmpeg : E:\Gemini\voxtral\node_modules\ffmpeg-static\ffmpeg.exe
 
   [1/3] 00:00:00  "Hello, welcome to my video."         →  ✔
   [2/3] 00:00:04  "Today we are going to learn FFmpeg." →  ✔
@@ -195,7 +195,7 @@ FFmpeg : E:\Gemini\tts\node_modules\ffmpeg-static\ffmpeg.exe
 
 Merging clips with bundled FFmpeg…
 
-✔  Done → E:\Gemini\tts\test.mp3  (0.04 MB)
+✔  Done → E:\Gemini\voxtral\test.mp3  (0.04 MB)
 ```
 
 ---
@@ -327,7 +327,7 @@ The config is stored as plain JSON at `~/.voxtral/config.json`.
 
 | Key | Set by | Description |
 |-----|--------|-------------|
-| `api_key` | `tts api set` | Your Mistral API key |
+| `api_key` | `voxtral api set` | Your Mistral API key |
 
 **Example `~/.voxtral/config.json`:**
 ```json
@@ -347,20 +347,20 @@ The config is stored as plain JSON at `~/.voxtral/config.json`.
 **Example:**
 ```bash
 # Linux / macOS
-MISTRAL_API_KEY=abc123 tts test.txt
+MISTRAL_API_KEY=abc123 voxtral test.txt
 
 # Windows PowerShell
-$env:MISTRAL_API_KEY="abc123"; tts test.txt
+$env:MISTRAL_API_KEY="abc123"; voxtral test.txt
 
 # Windows CMD
-set MISTRAL_API_KEY=abc123 && tts test.txt
+set MISTRAL_API_KEY=abc123 && voxtral test.txt
 ```
 
 ---
 
 ## How FFmpeg is Bundled
 
-`tts` uses the [`ffmpeg-static`](https://www.npmjs.com/package/ffmpeg-static) npm package — the same approach used by `music-downloader`.
+`voxtral` uses the [`ffmpeg-static`](https://www.npmjs.com/package/ffmpeg-static) npm package.
 
 - On `npm install -g .`, npm automatically downloads a **pre-compiled FFmpeg binary** for your platform
 - `require('ffmpeg-static')` returns the **absolute path** to that binary
@@ -410,8 +410,8 @@ Then update `TTS_MODEL` in `index.js` to match.
 ### `Error: File not found`
 Pass the full or relative path to the input file:
 ```bash
-tts C:\Users\sedat\Desktop\script.txt
-tts .\script.txt
+voxtral C:\Users\sedat\Desktop\script.txt
+voxtral .\script.txt
 ```
 
 ### Lines are skipped with `⚠ Skipping unrecognised line`
@@ -441,7 +441,7 @@ Each line must match exactly `HH:MM:SS|text`. Common mistakes:
 
 ## Full Command Examples
 
-Every possible way to use the `tts` CLI — copy, paste, run.
+Every possible way to use the `voxtral` CLI — copy, paste, run.
 
 ---
 
@@ -449,16 +449,16 @@ Every possible way to use the `tts` CLI — copy, paste, run.
 
 ```bash
 # Save your key (stored in ~/.voxtral/config.json)
-tts api set 2dfN8bc0XS31SKheOczCCw00lJPWFKZU
+voxtral api set 2dfN8bc0XS31SKheOczCCw00lJPWFKZU
 
 # Display current key (masked) and config file location
-tts api show
+voxtral api show
 
 # Override key for a single run via environment variable (not saved)
 # Windows PowerShell:
-$env:MISTRAL_API_KEY="2dfN8bc0XS31SKheOczCCw00lJPWFKZU"; tts test.txt
+$env:MISTRAL_API_KEY="2dfN8bc0XS31SKheOczCCw00lJPWFKZU"; voxtral test.txt
 # Linux / macOS:
-MISTRAL_API_KEY="2dfN8bc0XS31SKheOczCCw00lJPWFKZU" tts test.txt
+MISTRAL_API_KEY="2dfN8bc0XS31SKheOczCCw00lJPWFKZU" voxtral test.txt
 ```
 
 ---
@@ -467,7 +467,7 @@ MISTRAL_API_KEY="2dfN8bc0XS31SKheOczCCw00lJPWFKZU" tts test.txt
 
 ```bash
 # Show all available preset voices (slug, name, gender, language)
-tts voices
+voxtral voices
 ```
 
 ---
@@ -476,16 +476,16 @@ tts voices
 
 ```bash
 # Convert test.txt → test.mp3 using the default voice (en_paul_neutral)
-tts test.txt
+voxtral test.txt
 
 # Convert with a relative path
-tts .\narration.txt
+voxtral .\narration.txt
 
 # Convert with an absolute path (Windows)
-tts C:\Users\sedat\Desktop\script.txt
+voxtral C:\Users\sedat\Desktop\script.txt
 
 # Convert with an absolute path (Linux / macOS)
-tts /home/sedat/projects/script.txt
+voxtral /home/sedat/projects/script.txt
 ```
 
 ---
@@ -494,36 +494,36 @@ tts /home/sedat/projects/script.txt
 
 ```bash
 # Neutral — relaxed, balanced  ⭐ DEFAULT
-tts test.txt --voice en_paul_neutral
-tts test.txt -v en_paul_neutral
+voxtral test.txt --voice en_paul_neutral
+voxtral test.txt -v en_paul_neutral
 
 # Confident — bold, punchy  (great for intros, announcements)
-tts test.txt --voice en_paul_confident
-tts test.txt -v en_paul_confident
+voxtral test.txt --voice en_paul_confident
+voxtral test.txt -v en_paul_confident
 
 # Cheerful — upbeat, breezy  (lifestyle, casual content)
-tts test.txt --voice en_paul_cheerful
-tts test.txt -v en_paul_cheerful
+voxtral test.txt --voice en_paul_cheerful
+voxtral test.txt -v en_paul_cheerful
 
 # Happy — sunny, easygoing  (entertainment, positive content)
-tts test.txt --voice en_paul_happy
-tts test.txt -v en_paul_happy
+voxtral test.txt --voice en_paul_happy
+voxtral test.txt -v en_paul_happy
 
 # Excited — bouncy, spirited  (promos, gaming, energy)
-tts test.txt --voice en_paul_excited
-tts test.txt -v en_paul_excited
+voxtral test.txt --voice en_paul_excited
+voxtral test.txt -v en_paul_excited
 
 # Sad — heavy, hushed  (drama, storytelling)
-tts test.txt --voice en_paul_sad
-tts test.txt -v en_paul_sad
+voxtral test.txt --voice en_paul_sad
+voxtral test.txt -v en_paul_sad
 
 # Frustrated — edgy, snappy  (character voices, drama)
-tts test.txt --voice en_paul_frustrated
-tts test.txt -v en_paul_frustrated
+voxtral test.txt --voice en_paul_frustrated
+voxtral test.txt -v en_paul_frustrated
 
 # Angry — raw, gruff  (action, drama, character voices)
-tts test.txt --voice en_paul_angry
-tts test.txt -v en_paul_angry
+voxtral test.txt --voice en_paul_angry
+voxtral test.txt -v en_paul_angry
 ```
 
 ---
@@ -532,8 +532,8 @@ tts test.txt -v en_paul_angry
 
 ```bash
 # Neutral — calm, even  (documentaries, British accent narration)
-tts test.txt --voice gb_oliver_neutral
-tts test.txt -v gb_oliver_neutral
+voxtral test.txt --voice gb_oliver_neutral
+voxtral test.txt -v gb_oliver_neutral
 ```
 
 ---
@@ -542,8 +542,8 @@ tts test.txt -v gb_oliver_neutral
 
 ```bash
 # Sarcasm — dry, wry  (comedy, satire, character dialogue)
-tts test.txt --voice gb_jane_sarcasm
-tts test.txt -v gb_jane_sarcasm
+voxtral test.txt --voice gb_jane_sarcasm
+voxtral test.txt -v gb_jane_sarcasm
 ```
 
 ---
@@ -552,16 +552,16 @@ tts test.txt -v gb_jane_sarcasm
 
 ```bash
 # Clone from a WAV file in the current folder
-tts test.txt --voice my_voice.wav
+voxtral test.txt --voice my_voice.wav
 
 # Clone from an MP3 reference file
-tts test.txt --voice speaker_sample.mp3
+voxtral test.txt --voice speaker_sample.mp3
 
 # Clone from an absolute path
-tts test.txt --voice C:\recordings\reference.wav
+voxtral test.txt --voice C:\recordings\reference.wav
 
 # Short alias
-tts test.txt -v my_voice.wav
+voxtral test.txt -v my_voice.wav
 ```
 
 > When `--voice` points to a file that exists on disk, it is used for voice cloning.
@@ -573,10 +573,10 @@ tts test.txt -v my_voice.wav
 
 ```bash
 # File in another folder — output lands in the same folder as the input
-tts C:\projects\video\script.txt --voice en_paul_confident
+voxtral C:\projects\video\script.txt --voice en_paul_confident
 # → C:\projects\video\script.mp3
 
-tts C:\projects\video\intro.txt --voice en_paul_excited
+voxtral C:\projects\video\intro.txt --voice en_paul_excited
 # → C:\projects\video\intro.mp3
 ```
 
@@ -586,23 +586,23 @@ tts C:\projects\video\intro.txt --voice en_paul_excited
 
 ```bash
 # Setup (run once)
-tts api set YOUR_MISTRAL_API_KEY
+voxtral api set YOUR_MISTRAL_API_KEY
 
 # See what voices are available
-tts voices
+voxtral voices
 
 # Convert with every voice style — quick reference
-tts test.txt -v en_paul_neutral      # Default — general narration
-tts test.txt -v en_paul_confident    # Bold, punchy — intros & announcements
-tts test.txt -v en_paul_cheerful     # Upbeat, breezy — casual & lifestyle
-tts test.txt -v en_paul_happy        # Sunny, easygoing — entertainment
-tts test.txt -v en_paul_excited      # Bouncy, spirited — promos & gaming
-tts test.txt -v en_paul_sad          # Heavy, hushed — drama & storytelling
-tts test.txt -v en_paul_frustrated   # Edgy, snappy — character voices
-tts test.txt -v en_paul_angry        # Raw, gruff — action & drama
-tts test.txt -v gb_oliver_neutral    # British male — calm & even
-tts test.txt -v gb_jane_sarcasm      # British female — dry & sarcastic
-tts test.txt -v my_voice.wav         # Voice cloning from local audio file
+voxtral test.txt -v en_paul_neutral      # Default — general narration
+voxtral test.txt -v en_paul_confident    # Bold, punchy — intros & announcements
+voxtral test.txt -v en_paul_cheerful     # Upbeat, breezy — casual & lifestyle
+voxtral test.txt -v en_paul_happy        # Sunny, easygoing — entertainment
+voxtral test.txt -v en_paul_excited      # Bouncy, spirited — promos & gaming
+voxtral test.txt -v en_paul_sad          # Heavy, hushed — drama & storytelling
+voxtral test.txt -v en_paul_frustrated   # Edgy, snappy — character voices
+voxtral test.txt -v en_paul_angry        # Raw, gruff — action & drama
+voxtral test.txt -v gb_oliver_neutral    # British male — calm & even
+voxtral test.txt -v gb_jane_sarcasm      # British female — dry & sarcastic
+voxtral test.txt -v my_voice.wav         # Voice cloning from local audio file
 ```
 
 ---
@@ -610,14 +610,14 @@ tts test.txt -v my_voice.wav         # Voice cloning from local audio file
 ### 📋 Full Syntax Summary
 
 ```
-tts --help
-tts api set <MISTRAL_API_KEY>
-tts api show
-tts voices
-tts <input.txt>
-tts <input.txt> --voice <slug>
-tts <input.txt> --voice <reference_audio.wav|mp3>
-tts <input.txt> -v <slug|file>
+voxtral help
+voxtral api set <MISTRAL_API_KEY>
+voxtral api show
+voxtral voices
+voxtral <input.txt>
+voxtral <input.txt> --voice <slug>
+voxtral <input.txt> --voice <reference_audio.wav|mp3>
+voxtral <input.txt> -v <slug|file>
 ```
 
 | Token | Type | Required | Description |
@@ -627,7 +627,7 @@ tts <input.txt> -v <slug|file>
 | `api set <KEY>` | subcommand | — | Save Mistral API key to config |
 | `api show` | subcommand | — | Show saved key (masked) |
 | `voices` | subcommand | — | List all preset voices |
-| `--help` / `-h` | flag | — | Show help text |
+| `help` / `--help` / `-h` | subcommand / flag | — | Show help text |
 
 ---
 
