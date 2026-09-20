@@ -192,6 +192,7 @@ function cmdApiSet(args) {
   const key = args[0];
   if (!key) {
     console.error('Usage: voxtral api set <MISTRAL_API_KEY>');
+    console.error('Get your API key at: https://console.mistral.ai/api-keys');
     process.exit(1);
   }
   const cfg = readConfig();
@@ -208,12 +209,14 @@ function cmdApiShow() {
   if (!cfg.api_key) {
     console.log(`Config file : ${p}`);
     console.log('API key     : (not set)');
-    console.log('\nTo set your key run:  voxtral api set <YOUR_KEY>');
+    console.log('\nGet your API key at: https://console.mistral.ai/api-keys');
+    console.log('To set your key run: voxtral api set <YOUR_KEY>');
   } else {
     // Mask all but the last 4 chars
     const masked = cfg.api_key.replace(/.(?=.{4})/g, '*');
     console.log(`Config file : ${p}`);
     console.log(`API key     : ${masked}`);
+    console.log(`Key console : https://console.mistral.ai/api-keys`);
   }
 }
 
@@ -222,7 +225,9 @@ function cmdApiShow() {
 async function cmdVoices() {
   const apiKey = getApiKey();
   if (!apiKey) {
-    console.error('Error: No API key configured. Run: voxtral api set <YOUR_KEY>');
+    console.error('Error: No API key configured.');
+    console.error('Get your API key at: https://console.mistral.ai/api-keys');
+    console.error('Then run: voxtral api set <YOUR_KEY>');
     process.exit(1);
   }
 
@@ -282,7 +287,9 @@ function getTimestampString() {
 async function cmdConvert(inputFile, opts) {
   const apiKey = getApiKey();
   if (!apiKey) {
-    console.error('Error: No API key configured. Run: voxtral api set <YOUR_KEY>');
+    console.error('Error: No API key configured.');
+    console.error('Get your API key at: https://console.mistral.ai/api-keys');
+    console.error('Then run: voxtral api set <YOUR_KEY>');
     process.exit(1);
   }
 
@@ -463,6 +470,10 @@ OUTPUT
 CONFIG FILE
 
   ${getConfigPath()}
+
+API KEY CONSOLE
+
+  https://console.mistral.ai/api-keys
 
 DEFAULT VOICE
 

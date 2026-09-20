@@ -62,15 +62,16 @@ npm publish --access public
 ## Quick Start
 
 ```bash
-# 1. Save your Mistral API key
+# 1. Get your Mistral API key from: https://console.mistral.ai/api-keys
+# 2. Save your key to config
 voxtral api set YOUR_MISTRAL_API_KEY
 
-# 2. Create a timestamped text file
+# 3. Create a timestamped text file
 echo "00:00:00|Hello world." > test.txt
 
-# 3. Convert to MP3 (uses default voice: en_paul_neutral)
+# 4. Convert to MP3 (uses default voice: en_paul_neutral)
 voxtral test.txt
-# → produces test.mp3 in the same folder
+# → produces test_<timestamp>.mp3 in the same folder
 ```
 
 ---
@@ -81,7 +82,7 @@ voxtral test.txt
 
 ### `voxtral api set`
 
-Saves your Mistral API key to the user config file.
+Saves your Mistral API key to the user config file. You can obtain an API key at [https://console.mistral.ai/api-keys](https://console.mistral.ai/api-keys).
 
 ```
 voxtral api set <KEY>
@@ -89,7 +90,7 @@ voxtral api set <KEY>
 
 | Argument | Required | Description |
 |----------|----------|-------------|
-| `<KEY>`  | ✔ Yes   | Your Mistral API key from [console.mistral.ai](https://console.mistral.ai) |
+| `<KEY>`  | ✔ Yes   | Your Mistral API key from [console.mistral.ai/api-keys](https://console.mistral.ai/api-keys) |
 
 **Examples:**
 ```bash
@@ -441,9 +442,11 @@ Every possible way to use the `voxtral` CLI — copy, paste, run.
 
 ### 🔑 API Key Management
 
+Get your Mistral API key from: [https://console.mistral.ai/api-keys](https://console.mistral.ai/api-keys)
+
 ```bash
 # Save your key (stored in ~/.voxtral/config.json)
-voxtral api set 2dfN8bc0XS31SKheOczCCw00lJPWFKZU
+voxtral api set YOUR_MISTRAL_API_KEY
 
 # Display current key (masked) and config file location
 voxtral api show
