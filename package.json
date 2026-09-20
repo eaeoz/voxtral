@@ -1,0 +1,40 @@
+{
+  "name": "voxtral",
+  "version": "1.0.1",
+  "description": "Convert timestamped text files to MP3 using Mistral Voxtral TTS CLI",
+  "main": "index.js",
+  "bin": {
+    "voxtral": "index.js",
+    "tts": "index.js"
+  },
+  "preferGlobal": true,
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "index.js",
+    "README.md"
+  ],
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "voxtral",
+    "mistral",
+    "tts",
+    "text-to-speech",
+    "audio",
+    "mp3",
+    "voice-cloning",
+    "cli"
+  ],
+  "author": "Sedat ERGOZ",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eaeoz/tts.git"
+  },
+  "dependencies": {
+    "ffmpeg-static": "^5.2.0"
+  }
+}
