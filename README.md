@@ -206,24 +206,20 @@ Each line follows the pattern:
 HH:MM:SS|Text to speak
 ```
 
-- **HH:MM:SS** — timestamp in hours:minutes:seconds (used for logging only; does not affect audio timing)
+- **HH:MM:SS** — timestamp in hours:minutes:seconds (used for audio synchronization and timeline alignment)
 - **|** — literal pipe character separator
 - **Text** — the sentence or phrase to synthesise
 
-**Example file (`narration.txt`):**
-```
-00:00:00|Hello, welcome to my channel.
-00:00:04|Today we will learn about FFmpeg.
-00:00:08|FFmpeg is a powerful multimedia framework.
-00:00:14|Let's see how it works.
-00:00:18|First, install FFmpeg on your system.
-```
+**Timestamp Audio Alignment Behavior:**
+- **Silence Padding:** If a line finishes before the next line's timestamp (e.g. line 1 is at `00:00:00` and line 2 is at `00:00:25`), silence is automatically padded so line 2 starts at exactly 25 seconds.
+- **Overflow Trimming:** If a line takes longer than the gap before the next timestamp (e.g. line 1 takes 10s but line 2 starts at `00:00:04`), line 1 is trimmed to 4 seconds so line 2 starts precisely on schedule.
+- **Initial Delay:** If the first timestamp is greater than `00:00:00` (e.g. `00:00:05`), initial silence is inserted at the beginning.
 
 **Rules:**
 - Empty lines are skipped automatically
 - Lines that don't match the `HH:MM:SS|text` pattern are skipped with a warning
 - Lines are processed **sequentially** (one API call per line)
-- All clips are then merged into one continuous MP3 via FFmpeg
+- All clips are aligned to their timestamps and merged into one continuous MP3 via FFmpeg
 
 ---
 
