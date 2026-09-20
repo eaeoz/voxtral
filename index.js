@@ -18,9 +18,23 @@ const DEFAULT_VOICE = 'en_paul_neutral';
 
 // ─── Config helpers ───────────────────────────────────────────────────────────
 
-/** Returns the path to the per-user config file (~/.tts/config.json) */
+/** Returns the path to the per-user config file (~/.voxtral/config.json) */
 function getConfigPath() {
-  return path.join(os.homedir(), '.tts', 'config.json');
+  const voxtralDir  = path.join(os.homedir(), '.voxtral');
+  const voxtralPath = path.join(voxtralDir, 'config.json');
+  const ttsPath     = path.join(os.homedir(), '.tts', 'config.json');
+
+  // Auto-migrate legacy ~/.tts/config.json to ~/.voxtral/config.json if present
+  if (!fs.existsSync(voxtralPath) && fs.existsSync(ttsPath)) {
+    try {
+      fs.mkdirSync(voxtralDir, { recursive: true });
+      fs.copyFileSync(ttsPath, voxtralPath);
+    } catch {
+      // ignore
+    }
+  }
+
+  return voxtralPath;
 }
 
 /** Reads the config file; returns {} if it does not exist yet */
@@ -288,7 +302,7 @@ async function cmdConvert(inputFile, opts) {
   console.log('');
 
   // ── Temp directory for individual clips ──
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'tts-'));
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'voxtral-'));
 
   try {
     const clipPaths = [];
@@ -331,7 +345,7 @@ voxtral (tts) — Mistral Voxtral Text-to-Speech CLI
 
 USAGE
 
-  voxtral api set <KEY>          Save your Mistral API key to ~/.tts/config.json
+  voxtral api set <KEY>          Save your Mistral API key to ~/.voxtral/config.json
   voxtral api show               Display the currently stored API key (masked)
   voxtral voices                 List all available Voxtral preset voices
   voxtral <input.txt>            Convert a timestamped text file → MP3
