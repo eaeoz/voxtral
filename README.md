@@ -136,7 +136,7 @@ voxtral voices
 
 **Example output:**
 ```
-Available voices (10 total):
+Available voices (10 unique total):
 
   SLUG                           NAME                      GENDER  LANG
   ------------------------------ ------------------------- ------  ----
