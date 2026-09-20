@@ -163,22 +163,20 @@ Use the **SLUG** value with `--voice`.
 Converts a timestamped text file to a single merged MP3.
 
 ```
-voxtral <input.txt> [--voice <slug|file>]
+voxtral <input.txt> [--voice <slug|file>] [--output <out.mp3>]
 ```
 
 | Argument | Required | Description |
 |----------|----------|-------------|
 | `<input.txt>` | ✔ Yes | Path to the timestamped text file |
-| `--voice <slug>` | ✗ No | Preset voice slug (default: `en_paul_neutral`) |
-| `--voice <file.wav>` | ✗ No | Local audio file for voice cloning |
-| `-v <slug>` | ✗ No | Shorthand for `--voice` |
+| `--voice <slug>` / `-v` | ✗ No | Preset voice slug (default: `en_paul_neutral`) or audio file for cloning |
+| `--output <out.mp3>` / `-o` | ✗ No | Custom output MP3 filename or path |
 
-**Output:** The MP3 is saved in the **same folder** as the input, with the same filename and a `.mp3` extension.
+**Output:** By default, the MP3 is saved in the **same folder** as the input with a timestamp appended (e.g. `test_20260920_161514.mp3`). You can override the output filename using `--output` or `-o`.
 
 ```
-narration.txt  →  narration.mp3
-intro.txt      →  intro.mp3
-test.txt       →  test.mp3
+voxtral test.txt                                        →  test_20260920_161514.mp3
+voxtral test.txt --voice gb_jane_sarcasm -o test2.mp3  →  test2.mp3
 ```
 
 **Progress display:**

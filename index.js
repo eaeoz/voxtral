@@ -249,6 +249,19 @@ async function cmdVoices() {
   console.log(`  Default voice: ${DEFAULT_VOICE}\n`);
 }
 
+/** Returns a formatted timestamp string (e.g. "20260920_161514") for default output filenames */
+function getTimestampString() {
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const YYYY = d.getFullYear();
+  const MM   = pad(d.getMonth() + 1);
+  const DD   = pad(d.getDate());
+  const hh   = pad(d.getHours());
+  const mm   = pad(d.getMinutes());
+  const ss   = pad(d.getSeconds());
+  return `${YYYY}${MM}${DD}_${hh}${mm}${ss}`;
+}
+
 // ─── Subcommand: voxtral <file> [options] ──────────────────────────────────────
 
 async function cmdConvert(inputFile, opts) {
@@ -263,11 +276,21 @@ async function cmdConvert(inputFile, opts) {
     process.exit(1);
   }
 
-  // Derive output path: same name as input, .mp3 extension
-  const outputFile = path.join(
-    path.dirname(path.resolve(inputFile)),
-    path.basename(inputFile, path.extname(inputFile)) + '.mp3'
-  );
+  // Derive output path: custom via --output / -o, or default to <basename>_<timestamp>.mp3
+  let outputFile;
+  if (opts.output) {
+    outputFile = path.resolve(opts.output);
+    if (!outputFile.toLowerCase().endsWith('.mp3')) {
+      outputFile += '.mp3';
+    }
+  } else {
+    const ts = getTimestampString();
+    const base = path.basename(inputFile, path.extname(inputFile));
+    outputFile = path.join(
+      path.dirname(path.resolve(inputFile)),
+      `${base}_${ts}.mp3`
+    );
+  }
 
   const entries = parseInputFile(inputFile);
   if (entries.length === 0) {
@@ -349,7 +372,7 @@ USAGE
   voxtral api show               Display the currently stored API key (masked)
   voxtral voices                 List all available Voxtral preset voices
   voxtral <input.txt>            Convert a timestamped text file → MP3
-  voxtral <input.txt> --voice <slug|file>
+  voxtral <input.txt> --voice <slug|file> [--output <output.mp3>]
                                  Use a specific voice slug or reference audio file
   voxtral help / --help          Show this help
   voxtral version / --version    Display version number
@@ -365,8 +388,9 @@ INPUT FILE FORMAT
 
 OUTPUT
 
-  Same folder as input, same name, .mp3 extension.
-  Example:  test.txt  →  test.mp3
+  Default: Same folder as input, with timestamp added (e.g. test_20260920_161514.mp3).
+  Custom : Pass --output / -o <file.mp3> to specify custom output path.
+  Example: test.txt -o test2.mp3 → test2.mp3
 
 CONFIG FILE
 
@@ -376,10 +400,10 @@ DEFAULT VOICE
 
   ${DEFAULT_VOICE}  (run "voxtral voices" to see all options)
 
-VOICE OPTIONS
+OPTIONS
 
-  --voice en_paul_confident   Use a preset voice by slug
-  --voice reference.wav       Voice cloning from a local WAV/MP3 file
+  --voice, -v <slug|file>     Preset voice slug or local reference audio file
+  --output, -o <file.mp3>     Custom output MP3 filename or path
 
 FFMPEG
 
@@ -429,12 +453,15 @@ async function main() {
     return;
   }
 
-  // voxtral <file> [--voice <slug>]
+  // voxtral <file> [--voice <slug>] [--output <file>]
   const inputFile = argv[0];
   const opts = {};
   for (let i = 1; i < argv.length; i++) {
-    if ((argv[i] === '--voice' || argv[i] === '-v') && argv[i + 1]) {
+    const arg = argv[i];
+    if ((arg === '--voice' || arg === '-v') && argv[i + 1]) {
       opts.voice = argv[++i];
+    } else if ((arg === '--output' || arg === '-o') && argv[i + 1]) {
+      opts.output = argv[++i];
     }
   }
 
