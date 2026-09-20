@@ -231,9 +231,11 @@ async function cmdVoices() {
     process.exit(1);
   }
 
-  // Fetch all pages
+  // Fetch all pages (deduplicating items by id/slug)
   let page = 1;
-  let allVoices = [];
+  const seenKeys = new Set();
+  const allVoices = [];
+
   while (true) {
     const res = await fetch(`https://api.mistral.ai/v1/audio/voices?page=${page}&page_size=50`, {
       headers: { 'Authorization': `Bearer ${apiKey}` },
@@ -245,8 +247,19 @@ async function cmdVoices() {
     }
     const json = await res.json();
     const items = json.items || json.voices || json.data || [];
-    allVoices = allVoices.concat(items);
-    if (page >= (json.total_pages || 1)) break;
+    if (!items.length) break;
+
+    let addedNew = false;
+    for (const v of items) {
+      const key = v.id || v.slug;
+      if (key && !seenKeys.has(key)) {
+        seenKeys.add(key);
+        allVoices.push(v);
+        addedNew = true;
+      }
+    }
+
+    if (!addedNew || page >= (json.total_pages || 1)) break;
     page++;
   }
 
@@ -255,7 +268,7 @@ async function cmdVoices() {
     return;
   }
 
-  console.log(`\nAvailable voices (${allVoices.length} total):\n`);
+  console.log(`\nAvailable voices (${allVoices.length} unique total):\n`);
   console.log(`  ${'SLUG'.padEnd(30)} ${'NAME'.padEnd(25)} GENDER  LANG`);
   console.log(`  ${'─'.repeat(30)} ${'─'.repeat(25)} ──────  ────`);
   for (const v of allVoices) {
