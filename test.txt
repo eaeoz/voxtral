@@ -1,0 +1,3 @@
+00:00:00|Hello, welcome to my video.
+00:00:04|Today we are going to learn FFmpeg.
+00:00:08|Let's get started.
