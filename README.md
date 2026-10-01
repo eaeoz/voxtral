@@ -327,7 +327,7 @@ The config is stored as plain JSON at `~/.voxtral/config.json`.
 **Example `~/.voxtral/config.json`:**
 ```json
 {
-  "api_key": "your-mistral-api-key-here"
+  "api_key": "YOUR_MISTRAL_API_KEY"
 }
 ```
 
@@ -342,13 +342,13 @@ The config is stored as plain JSON at `~/.voxtral/config.json`.
 **Example:**
 ```bash
 # Linux / macOS
-MISTRAL_API_KEY=abc123 voxtral test.txt
+MISTRAL_API_KEY=YOUR_MISTRAL_API_KEY voxtral test.txt
 
 # Windows PowerShell
-$env:MISTRAL_API_KEY="abc123"; voxtral test.txt
+$env:MISTRAL_API_KEY="YOUR_MISTRAL_API_KEY"; voxtral test.txt
 
 # Windows CMD
-set MISTRAL_API_KEY=abc123 && voxtral test.txt
+set MISTRAL_API_KEY=YOUR_MISTRAL_API_KEY && voxtral test.txt
 ```
 
 ---
